@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { useLocation } from 'react-router-dom';
 import { mockExams } from './data';
 import { Exam, Chapter, Goal, Milestone, SiteSettings, Resource, Quiz, StudyPlan, AIReport, CalendarEvent } from './types';
 import { ExamCard } from './components/ExamCard';
@@ -34,7 +33,7 @@ import {
   getDocs,
   FirebaseUser 
 } from './firebase';
-import { LogIn, GraduationCap, CheckCircle2, LayoutGrid, Settings, AlertCircle, BookOpen, X, Trophy, ChevronRight, Calendar as CalendarIcon, ClipboardCheck, Search, ArrowUpDown } from 'lucide-react';
+import { LogIn, GraduationCap, CheckCircle2, LayoutGrid, BookOpen, X, Trophy, ChevronRight, Calendar as CalendarIcon, ClipboardCheck, Search, ArrowUpDown } from 'lucide-react';
 
 export default function App() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
@@ -59,7 +58,6 @@ export default function App() {
   const [theme, setTheme] = useState<'hardware' | 'minimal'>('hardware');
   const [examSearchQuery, setExamSearchQuery] = useState('');
   const [examSortBy, setExamSortBy] = useState<'priority' | 'progress-high' | 'progress-low' | 'nearest-date'>('priority');
-  const location = useLocation();
 
   // Theme Switcher
   useEffect(() => {
@@ -868,7 +866,7 @@ export default function App() {
                       <div className="px-4 py-3 sm:px-6 sm:py-4 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 shadow-2xl">
                         <p className="text-[9px] font-bold text-white/40 uppercase tracking-widest mb-1">Next Deadline</p>
                         <p className="text-sm sm:text-base font-bold text-white">
-                          {nextExamDeadline.upcoming.shortName} · {nextExamDeadline.daysLeft >= 0 ? `${nextExamDeadline.daysLeft} days` : 'Passed'}
+                          {nextExamDeadline.upcoming.shortName} · {nextExamDeadline.daysLeft > 0 ? `${nextExamDeadline.daysLeft} days left` : nextExamDeadline.daysLeft === 0 ? 'Today' : 'Passed'}
                         </p>
                       </div>
                     )}
@@ -1073,18 +1071,22 @@ export default function App() {
                 </div>
 
                 <div className="mb-4 flex flex-col sm:flex-row gap-3">
-                  <label className="flex-1 flex items-center gap-2 px-4 py-3 bg-white/5 rounded-2xl border border-white/10">
+                  <label htmlFor="exam-search" className="flex-1 flex items-center gap-2 px-4 py-3 bg-white/5 rounded-2xl border border-white/10">
                     <Search className="w-4 h-4 text-white/40" />
                     <input
+                      id="exam-search"
+                      aria-label="Search exams"
                       value={examSearchQuery}
                       onChange={(e) => setExamSearchQuery(e.target.value)}
                       placeholder="Search exams by name..."
                       className="w-full bg-transparent text-sm text-white placeholder:text-white/35 focus:outline-none"
                     />
                   </label>
-                  <label className="sm:w-64 flex items-center gap-2 px-4 py-3 bg-white/5 rounded-2xl border border-white/10">
+                  <label htmlFor="exam-sort" className="sm:w-64 flex items-center gap-2 px-4 py-3 bg-white/5 rounded-2xl border border-white/10">
                     <ArrowUpDown className="w-4 h-4 text-white/40" />
                     <select
+                      id="exam-sort"
+                      aria-label="Sort exams"
                       value={examSortBy}
                       onChange={(e) => setExamSortBy(e.target.value as 'priority' | 'progress-high' | 'progress-low' | 'nearest-date')}
                       className="w-full bg-transparent text-sm text-white focus:outline-none"
