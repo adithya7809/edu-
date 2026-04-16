@@ -1,0 +1,191 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Stores user profile and selected exams",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "selectedExams": { "type": "array", "items": { "type": "string" } },
+        "theme": { "type": "string", "enum": ["hardware", "minimal"] },
+        "currentView": { "type": "string", "enum": ["dashboard", "performance"] },
+        "selectedExamId": { "type": "string" }
+      },
+      "required": ["name", "selectedExams", "theme", "currentView"]
+    },
+    "ChapterProgress": {
+      "title": "Chapter Progress",
+      "description": "Stores completion status for a chapter's tasks",
+      "type": "object",
+      "properties": {
+        "theory": { "type": "boolean" },
+        "dpp": { "type": "boolean" },
+        "chapterTest": { "type": "boolean" },
+        "revision1": { "type": "boolean" },
+        "revision2": { "type": "boolean" }
+      }
+    },
+    "Goal": {
+      "title": "Goal",
+      "description": "A study goal for a specific exam",
+      "type": "object",
+      "properties": {
+        "text": { "type": "string" },
+        "completed": { "type": "boolean" },
+        "examId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["text", "completed", "examId"]
+    },
+    "ExamData": {
+      "title": "Exam Data",
+      "description": "Stores custom exam data like milestones",
+      "type": "object",
+      "properties": {
+        "milestones": { "type": "array", "items": { "$ref": "Milestone" } }
+      }
+    },
+    "Milestone": {
+      "title": "Milestone",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "text": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "type": { "type": "string", "enum": ["exam", "revision", "mock-test"] }
+      }
+    },
+    "SiteSettings": {
+      "title": "Site Settings",
+      "type": "object",
+      "properties": {
+        "siteName": { "type": "string" },
+        "welcomeMessage": { "type": "string" },
+        "primaryColor": { "type": "string" }
+      }
+    },
+    "Resource": {
+      "title": "Resource",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "type": { "type": "string", "enum": ["note", "link", "guide"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Quiz": {
+      "title": "Quiz",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "type": { "type": "string", "enum": ["practice", "mock-test"] },
+        "questions": { "type": "array", "items": { "$ref": "Question" } },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Question": {
+      "title": "Question",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "text": { "type": "string" },
+        "options": { "type": "array", "items": { "type": "string" } },
+        "correctAnswer": { "type": "integer" }
+      }
+    },
+    "StudyPlan": {
+      "title": "Study Plan",
+      "type": "object",
+      "properties": {
+        "examId": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "dailyTasks": { "type": "array", "items": { "$ref": "DailyTask" } },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "DailyTask": {
+      "title": "Daily Task",
+      "type": "object",
+      "properties": {
+        "day": { "type": "integer" },
+        "tasks": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "CalendarEvent": {
+      "title": "Calendar Event",
+      "description": "A custom event on the study calendar",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "text": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "type": { "type": "string", "enum": ["exam", "revision", "mock-test", "custom"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "text", "date", "type"]
+    },
+    "AIReport": {
+      "title": "AI Report",
+      "type": "object",
+      "properties": {
+        "examId": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "analysis": {
+          "type": "object",
+          "properties": {
+            "strengths": { "type": "array", "items": { "type": "string" } },
+            "weaknesses": { "type": "array", "items": { "type": "string" } },
+            "recommendations": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile document"
+    },
+    "/users/{userId}/chapterProgress/{chapterId}": {
+      "schema": "ChapterProgress",
+      "description": "Progress for a specific chapter"
+    },
+    "/users/{userId}/goals/{goalId}": {
+      "schema": "Goal",
+      "description": "User goals for exams"
+    },
+    "/users/{userId}/exams/{examId}": {
+      "schema": "ExamData",
+      "description": "Custom exam data (milestones, etc.)"
+    },
+    "/users/{userId}/config/settings": {
+      "schema": "SiteSettings",
+      "description": "User site settings"
+    },
+    "/users/{userId}/resources/{resourceId}": {
+      "schema": "Resource",
+      "description": "User saved resources"
+    },
+    "/users/{userId}/quizzes/{quizId}": {
+      "schema": "Quiz",
+      "description": "User generated quizzes and mock tests"
+    },
+    "/users/{userId}/studyPlans/{planId}": {
+      "schema": "StudyPlan",
+      "description": "User generated study plans"
+    },
+    "/users/{userId}/aiReports/{reportId}": {
+      "schema": "AIReport",
+      "description": "User generated AI reports"
+    },
+    "/users/{userId}/calendarEvents/{eventId}": {
+      "schema": "CalendarEvent",
+      "description": "Custom user calendar events"
+    }
+  }
+}

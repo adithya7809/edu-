@@ -1,0 +1,5 @@
+{
+  "name": "ExamsCmd",
+  "description": "A high-performance dashboard for tracking exam preparation progress, daily goals, and chapter priorities, now featuring an AI Commander for schedule management and content prep.",
+  "requestFramePermissions": []
+}
